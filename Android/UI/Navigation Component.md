@@ -1,8 +1,8 @@
 <h1><i>Navigation Component</i></h1>
 
-> :warning: La aparición de Jetpack Compose trajo algunos cambios a la hora de implementar el componente de Navegación. Y además, va evolucionando día a día, por lo cual puede que esto mismo quede deprecado rápido y haya que ir actualizándolo.
+> :warning: El componente de Navigation que se describe para Compose, ya quedó deprecado. Ya está productiva la versión de Navigation3.
 >
-> 🔍 Revisar el archivo correspondiente a la Navegación en el proyecto [JetpackComposeCatalog](https://github.com/javier-tapia/JetpackComposeCatalog/blob/master/app/src/main/java/com/cursokotlin/jetpackcomponentscatalog/navigation/NavigationHandler.kt)
+> 🔍 Revisar lo relativo a la Navegación en Compose en el [Lab de Navigation](https://github.com/javier-tapia/android-and-kotlin-lab-chronicles/tree/master/app/src/main/java/com/example/android_and_kotlin_lab_chronicles/experiments/jetpack_compose/navigation)
 
 ***Index***:
 <!-- TOC -->

@@ -8,6 +8,7 @@
   * [Asincronía (*Asynchrony*)](#asincronía-asynchrony)
   * [Atomicidad (*Atomicity*)](#atomicidad-atomicity)
   * [*Backpressure*](#backpressure)
+  * [*Buffer*](#buffer)
   * [*Build*](#build)
   * [*Bytecode*](#bytecode)
   * [*Callback*](#callback)
@@ -42,6 +43,7 @@
   * [*Receiver*](#receiver)
   * [Sentencia (*statement*)](#sentencia-statement)
   * [Serializar (*serialize*)](#serializar-serialize)
+  * [*Stale State* (Estado Estancado)](#stale-state-estado-estancado)
   * [TLS/SSL](#tlsssl)
   * [*Trade-off*](#trade-off)
 <!-- TOC -->
@@ -123,7 +125,10 @@ Resultado correcto: 7.
 ```
 
 ## *Backpressure*
-Mecanismo de control de flujo que **regula la velocidad de producción de datos cuando el consumidor no puede procesarlos al mismo ritmo**, evitando saturación, pérdida de información o fallas por sobrecarga. Permite aplicar estrategias como espera, almacenamiento en _buffer_, descarte o reducción de datos para mantener la estabilidad del sistema.
+Mecanismo de control de flujo que **regula la velocidad de producción de datos cuando el consumidor no puede procesarlos al mismo ritmo**, evitando saturación, pérdida de información o fallas por sobrecarga. Permite aplicar estrategias como espera, almacenamiento en [_buffer_](#buffer), descarte o reducción de datos para mantener la estabilidad del sistema.
+
+## *Buffer*
+Espacio de almacenamiento intermedio que absorbe ráfagas de datos de alta velocidad para entregarlos de forma controlada o procesada a un sistema más lento que no podría (o no debería) procesar esa ráfaga de forma directa.
 
 ## *Build*
 Proceso global que incluye varios pasos para preparar un software para su ejecución, incluyendo compilación del código fuente, ejecución de pruebas unitarias, empaquetado de la aplicación (por ejemplo, crear un archivo JAR o WAR en Java), generación de documentación, creación de artefactos para despliegue.
@@ -344,6 +349,11 @@ Ver [Expresión](#expresión-expression)
 ## Serializar (*serialize*)
 Codificar un objeto con el fin de transmitirlo, ya sea como una serie de *bytes* o en un formato como XML o JSON.  
 Ver [Deserializar](#deserializar-deserialize)
+
+## *Stale State* (Estado Estancado)
+> 🔍 Ver también [Concurrencia](#concurrencia-concurrency)
+
+Error de concurrencia lógica que ocurre cuando una función de larga duración (como una corrutina o un _callback_ asíncrono) **captura y congela una variable de estado del pasado**, quedando completamente ciega a las actualizaciones en tiempo real que esa variable sufra en el hilo principal.
 
 ## TLS/SSL
 > 👉 Hoy en día, TLS reemplaza completamente a SSL, que está obsoleto.

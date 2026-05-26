@@ -1152,6 +1152,8 @@ Tomando lo que indica la [documentación oficial](https://developer.android.com/
 > _Hilt está construido sobre la librería de inyección de dependencias de Dagger, lo que proporciona una forma estándar de incorporar Dagger en una aplicación de Android_.
 > _(...) Hilt reduce el código repetitivo (boilerplate) involucrado en el uso de Dagger en una aplicación de Android._
 
+> 🔍 Ver también el [Lab de Hilt](https://github.com/javier-tapia/android-and-kotlin-lab-chronicles/tree/master/app/src/main/java/com/example/android_and_kotlin_lab_chronicles/experiments/dependency_injection/hilt)
+
 Para configurarlo usando Kotlin DSL, en el ***build.gradle.kts*** del proyecto, se agrega:
 
 ````kotlin
