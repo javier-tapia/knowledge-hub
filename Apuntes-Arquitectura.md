@@ -20,6 +20,7 @@
       * [Modelos de Dominio](#modelos-de-dominio)
       * [Transformación entre capas](#transformación-entre-capas)
     * [Ejemplo estructura](#ejemplo-estructura)
+      * [*Vertical Slice Architecture*](#vertical-slice-architecture)
   * [Técnicas para analizar código "desconocido"](#técnicas-para-analizar-código-desconocido)
     * [Estrategias generales](#estrategias-generales)
   * [Patrones de Diseño](#patrones-de-diseño)
@@ -435,6 +436,44 @@ com.example.movieapp/
     ├── movielist/
     ├── moviedetail/
     └── favorites/
+```
+
+#### *Vertical Slice Architecture*
+Para transformar el ejemplo anterior a una **_Vertical Slice Architecture_**, se deben romper las grandes carpetas horizontales (``data``, ``domain``, ``presentation``) y agrupar todo el código por **características o funcionalidades del negocio** (**_features_**).  
+Cada rebanada contendrá su propia interfaz de usuario, su caso de uso y su acceso a datos (remoto o local).
+
+Así quedaría la estructura en este caso:
+
+```text
+com.example.movieapp/
+├── core/                       <-- Lo que sí se comparte en toda la app
+│   ├── theme/
+│   ├── components/             <-- Componentes visuales genéricos
+│   └── network/                <-- Cliente HTTP base (Retrofit/Ktor)
+│
+└── features/                   <-- Las Rebanadas Verticales
+    ├── movielist/              <-- Rebanada 1: Listado de películas
+    │   ├── ui/                 <-- Antes en presentation/movielist/
+    │   │   ├── MovieListScreen.kt
+    │   │   └── MovieListViewModel.kt
+    │   ├── domain/             <-- Antes disperso en domain/
+    │   │   ├── GetPopularMoviesUseCase.kt
+    │   │   └── MovieListModel.kt
+    │   └── data/               <-- Antes disperso en data/
+    │       ├── MovieListApi.kt
+    │       └── MovieListRepository.kt
+    │
+    ├── moviedetail/            <-- Rebanada 2: Detalle de película
+    │   ├── ui/
+    │   ├── domain/             <-- Su propio caso de uso (GetMovieDetailsUseCase)
+    │   └── data/               <-- Su propia API y modelos de respuesta de detalle
+    │
+    └── favorites/              <-- Rebanada 3: Películas favoritas
+        ├── ui/
+        ├── domain/
+        └── data/               <-- Aquí se queda el almacenamiento local (Room)
+            ├── FavoriteMovieDao.kt
+            └── FavoriteMovieEntity.kt
 ```
 
 ## Técnicas para analizar código "desconocido"

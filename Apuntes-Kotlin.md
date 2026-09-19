@@ -1193,7 +1193,9 @@ class MiClase {
 ```
 
 ### 3.9. *Inline Functions*
-Cuando se crean funciones que reciben funciones como argumento, el compilador necesita crear clases anónimas, **consumiendo recursos** por la asignación de memoria extra que precisa. Una forma de evitar esto es marcar la función como ***``inline``***. Al hacer esto, **el compilador internamente copia esa función** por su código en los sitios donde se llame, evitando crear una nueva referencia a la función. Sin embargo, hay que tener en cuenta que al marcar una función como *inline*, el *byte-code* también se hace más grande, por lo que es **altamente recomendable** solo alinear funciones de orden superior **pequeñas que acepten** ***lambdas*** **como parámetros**.
+Cuando se crean funciones que reciben funciones como argumento, el compilador necesita crear clases anónimas, **consumiendo recursos** por la asignación de memoria extra que precisa. Una forma de evitar esto es marcar la función como ***``inline``***. Al hacer esto, **el compilador internamente copia esa función** por su código en los sitios donde se llame, evitando crear una nueva referencia a la función.
+
+Sin embargo, hay que tener en cuenta que al marcar una función como *inline*, el *byte-code* también se hace más grande, por lo que es **altamente recomendable** solo alinear funciones de orden superior **pequeñas que acepten** ***lambdas*** **como parámetros**.
 
 ```kotlin
     import android.R.attr.radius
@@ -1256,7 +1258,8 @@ A veces, se necesita acceder a un tipo pasado como parámetro de una función. N
      treeNode.findParentOfType(MyTreeNode::class.java)
 ```
 
-Marcando un tipo como ***``reified``***, se tendrá la capacidad de **utilizar ese tipo dentro de la función**. Es importante que la función que lo utilice sea *inline*, ya que el código necesita ser sustituido en el lugar desde el que se ejecuta para poder funcionar:
+Marcando un tipo como ***``reified``***, se tendrá la capacidad de **utilizar ese tipo dentro de la función**. Rompe la restricción de Java, donde los tipos genéricos se borran en compilación (**_type erasure_**), y permite que la función sepa exactamente con qué clase concreta está trabajando.  
+Es importante que la función que lo utilice sea *inline*, ya que el código necesita ser sustituido en el lugar desde el que se ejecuta para poder funcionar:
 
 ```kotlin
      inline fun <reified T> TreeNode.findParentOfType(): T? {

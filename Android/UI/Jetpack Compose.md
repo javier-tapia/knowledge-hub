@@ -2,7 +2,7 @@
 
 [Jetpack Compose](https://developer.android.com/compose) es el _toolkit_ moderno de Android para construir interfaces de usuario de forma **declarativa**. En lugar de manipular vistas imperativamente, se describe **cómo debería verse la UI según su estado**, y Compose se encarga de renderizarla y actualizarla automáticamente.
 
-> 🔍 Ver también el proyecto [JetpackComposeCatalog](https://github.com/javier-tapia/JetpackComposeCatalog)
+> 🔍 Ver también el proyecto [android-and-kotlin-lab-chronicles](https://github.com/javier-tapia/android-and-kotlin-lab-chronicles/tree/master/app/src/main/java/com/example/android_and_kotlin_lab_chronicles/experiments/jetpack_compose)
 
 ***Index***:
 <!-- TOC -->
@@ -88,7 +88,7 @@ Hay varios tipos de modificadores:
 ### *Slot API* & ``Scaffold``
 
 Al igual que en los *xml*, la *AppBar* se puede colocar en cualquier parte de la pantalla. Pero si se quiere usar en la parte superior de la pantalla (lo habitual), lo ideal es usar el composable `Scaffold`. Este componente permite posicionar elementos típicos de *Material* en sus posiciones habituales sin necesidad de hacer nada extra.  
-`Scaffold` es el ejemplo perfecto de un patrón que se repite en _Jetpack Compose_, llamado ***Slot API***. Este patrón consiste básicamente en que **el componente ofrece huecos o *slots*** donde se puede añadir lo que uno quiera (*lambdas* genéricas que aceptan contenido composable). Ver [Practical Compose Slot API example](https://www.valueof.io/blog/compose-slot-api-example-composable-content-lambda)
+`Scaffold` es el ejemplo perfecto de un patrón que se repite en _Jetpack Compose_, llamado ***Slot API*** (*slot* = `@Composable () -> Unit`). Este patrón consiste básicamente en que **el componente ofrece huecos o *slots*** donde se puede añadir lo que uno quiera (*lambdas* genéricas que aceptan contenido composable). Ver [Practical Compose Slot API example](https://www.valueof.io/blog/compose-slot-api-example-composable-content-lambda)
 
 Para agregar una ``TopAppBar`` en un ``Scaffold``, lo primero que se debe hacer, es ir al *Manifest* y asegurarse que el ***theme*** de la *activity* no tenga (o herede de un tema que no tenga) ``ActionBar``.  
 Por ejemplo:

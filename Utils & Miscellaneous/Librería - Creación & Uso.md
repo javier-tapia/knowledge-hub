@@ -226,7 +226,7 @@ La **publicación técnica real** (subir el `.aar` al repositorio _Maven_) se ej
 
 ## 2. Consumo de una librería desde otro proyecto
 ### 2.1. Sin *JitPack*
-Se puede clonar el repositorio y usar los módulos de forma local. Técnicamente, no hay “publicación”, es inclusión directa de código.
+Se puede clonar el repositorio y usar los módulos de forma local. Técnicamente, no hay “publicación”, es inclusión directa de código (ver también [Crear módulos Gradle](Crear%20módulos%20Gradle.md)).
 
 **Cuándo se usa**:
 - Desarrollo activo

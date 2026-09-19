@@ -41,6 +41,9 @@
       * [Inyección por constructor (*constructor injection*)](#inyección-por-constructor-constructor-injection)
       * [Inyección a través de módulos](#inyección-a-través-de-módulos)
     * [*Koin*](#koin)
+    * [1. `single { }` (El Singleton)](#1-single---el-singleton)
+    * [2. `factory { }` (La Fábrica)](#2-factory---la-fábrica)
+    * [3. ¿Qué es `factoryOf` (o `singleOf`)?](#3-qué-es-factoryof-o-singleof)
   * [UI (*User Interface*)](#ui-user-interface)
     * [UI declarativa: *Jetpack Compose*](#ui-declarativa-jetpack-compose)
     * [*Context extensions*](#context-extensions)
@@ -1154,6 +1157,12 @@ Tomando lo que indica la [documentación oficial](https://developer.android.com/
 
 > 🔍 Ver también el [Lab de Hilt](https://github.com/javier-tapia/android-and-kotlin-lab-chronicles/tree/master/app/src/main/java/com/example/android_and_kotlin_lab_chronicles/experiments/dependency_injection/hilt)
 
+📌 **Resumen de pasos para la configuración**:  
+1. Agregar los plugins de ... en el ***build.gradle.kts*** del proyecto
+2. Agregar los plugins de ... en el ***build.gradle.kts*** del módulo (o módulos)
+3. Crear una clase que herede de ``Application()`` y agregarle la anotación ``@HiltAndroidApp``
+4. Agregar la aplicación con ``android:name`` dentro del tag ``<application/>`` en el Manifest
+
 Para configurarlo usando Kotlin DSL, en el ***build.gradle.kts*** del proyecto, se agrega:
 
 ````kotlin
@@ -1208,6 +1217,8 @@ A su vez, dentro del _Manifest_, se indica que esa clase será la que debe insta
         android:name=".ExampleApp" >
     </application>
 ````
+
+
 
 Hay varias formas de inyectar dependencias en un proyecto, dependiendo del lugar:
 
@@ -1335,7 +1346,47 @@ La declaración de las dependencias queda muy limpia, y además, sus palabras re
 - **``factory``** -> crea una instancia nueva cada vez que es requerida.
 - **``viewModel``** -> crea una instancia del *ViewModel*, y abstrae así de la utilización de *ViewModelProvider*.
 - **``get``** -> infiere una dependencia.  
-  Por último, solo quedaría lanzar en el **método** ***``onCreate()``*** de la clase ***Application*** el **método** ***``startKoin()``*** con los módulos que se quieren inyectar.
+
+### 1. `single { }` (El Singleton)
+
+Cuando usás `single`, Koin crea **una única instancia** de ese objeto para toda la vida de la aplicación (o hasta que se destruya explícitamente el módulo).
+
+- **Cómo funciona:** La primera vez que una pantalla o un ViewModel pide esa dependencia, Koin ejecuta el bloque de código, crea el objeto y lo guarda en su contenedor interno. Las siguientes veces que alguien vuelva a pedir esa misma dependencia, Koin **no vuelve a crear el objeto**, sino que te devuelve exactamente la misma instancia que ya tenía guardada.
+- **Cuándo usarlo:** Para componentes globales que mantienen un estado, que son costosos de inicializar o que actúan como "proveedores únicos" de información.
+    - *Ejemplos:* Tu `KtorClient`, bases de datos (SQLDelight), motores de analíticas y, en nuestro caso actual, el `FirebaseAuthProvider` (ya que queremos que toda la app comparta la misma sesión de Firebase).
+
+### 2. `factory { }` (La Fábrica)
+
+Cuando usás `factory`, Koin **crea una instancia nueva cada vez** que alguien la solicita.
+
+- **Cómo funciona:** Koin no guarda el objeto creado en ningún búfer. Si la Pantalla A pide este objeto, Koin corre el bloque y se lo da. Si la Pantalla B (o la misma pantalla un segundo después) lo vuelve a pedir, Koin vuelve a ejecutar el bloque y genera un objeto completamente nuevo en memoria.
+- **Cuándo usarlo:** Para objetos que son livianos, que no manejan un estado global persistente, o que necesitás que se limpien por completo y arranquen de cero cada vez que entrás a una sección.
+    - *Ejemplos:* UseCases (Casos de Uso), Repositorios sin caché, formateadores de datos específicos.
+
+### 3. ¿Qué es `factoryOf` (o `singleOf`)?
+
+`factoryOf` y `singleOf` no cambian el ciclo de vida del objeto; son simplemente **azúcar sintáctico** (*constructor DSL*) introducido en las versiones modernas de Koin para escribir menos código y evitar los repetitivos `get()`.
+
+📌 **Ejemplos**:  
+
+El enfoque tradicional:  
+```kotlin
+val appModule = module {
+    // Tenés que escribir a mano cada dependencia con get()
+    factory { LoginUseCase(get(), get()) } 
+}
+```
+
+El enfoque moderno con ``factoryOf``:  
+```kotlin
+val appModule = module {
+    // Koin usa reflexión en tiempo de compilación para escanear 
+    // el constructor de LoginUseCase e inyectar los parámetros automáticamente
+    factoryOf(::LoginUseCase) 
+}
+```
+
+Por último, solo quedaría lanzar en el **método** ***``onCreate()``*** de la clase ***Application*** el **método** ***``startKoin()``*** con los módulos que se quieren inyectar.
 
 ```kotlin
     import android.app.Application
