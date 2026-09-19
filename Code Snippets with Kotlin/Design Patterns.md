@@ -47,7 +47,7 @@ class DatabaseHelper private constructor(context: Context) {
     }
 
     // ============================================================
-    // 1️⃣ Opción con `synchronized` - Bloquea el hilo actual. Es suficiente para garantizar exclusión mutua en entornos sin concurrencia por corutinas.
+    // ① Opción con `synchronized` - Bloquea el hilo actual. Es suficiente para garantizar exclusión mutua en entornos sin concurrencia por corutinas.
     // ============================================================
     companion object {
         @Volatile
@@ -60,7 +60,7 @@ class DatabaseHelper private constructor(context: Context) {
     }
 
     // ============================================================
-    // 2️⃣ Opción con `Mutex` - Evita bloqueos de hilo. Suspende la coroutine mientras otra tiene el bloqueo. Ideal para Android y apps con Dispatchers.IO, ViewModelScope, etc.
+    // ② Opción con `Mutex` - Evita bloqueos de hilo. Suspende la coroutine mientras otra tiene el bloqueo. Ideal para Android y apps con Dispatchers.IO, ViewModelScope, etc.
     // ============================================================
     companion object {
         @Volatile
@@ -85,7 +85,7 @@ val db = DatabaseHelper.getInstance(context)
 ### Implementación
 ```kotlin
 // ============================================================
-// 1️⃣ Builder clásico (patrón tradicional / multiplataforma)
+// ① Builder clásico (patrón tradicional / multiplataforma)
 // ============================================================
 data class Notification(
     val title: String?,
@@ -109,7 +109,7 @@ class NotificationBuilder {
 }
 
 // ============================================================
-// 2️⃣ Builder con copy() (aprovechando data class inmutable)
+// ② Builder con copy() (aprovechando data class inmutable)
 // ============================================================
 data class NotificationCopy(
     val title: String? = null,
@@ -124,7 +124,7 @@ data class NotificationCopy(
 }
 
 // ============================================================
-// 3️⃣ Builder DSL-style (lambda con receptor / idiomático Kotlin)
+// ③ Builder DSL-style (lambda con receptor / idiomático Kotlin)
 // ============================================================
 data class NotificationDSL(
     var title: String? = null,
@@ -143,7 +143,7 @@ fun notification(block: NotificationDSL.() -> Unit): NotificationDSL {
 ### Uso
 ```kotlin
 // ============================================================
-// 1️⃣ Builder clásico
+// ① Builder clásico
 // ============================================================
 val notificationClassic = NotificationBuilder()
     .setTitle("Nueva tarea")
@@ -153,7 +153,7 @@ val notificationClassic = NotificationBuilder()
     .build()
 
 // ============================================================
-// 2️⃣ Builder con copy()
+// ② Builder con copy()
 // ============================================================
 val notificationCopy = NotificationCopy()
     .withTitle("Nueva tarea")
@@ -162,7 +162,7 @@ val notificationCopy = NotificationCopy()
     .withPersistent(true)
 
 // ============================================================
-// 3️⃣ Builder DSL-style
+// ③ Builder DSL-style
 // ============================================================
 val notificationDSL = notification {
     title = "Nueva tarea"
@@ -176,7 +176,7 @@ val notificationDSL = notification {
 ### Implementación
 ```kotlin
 // ============================================================
-// 1️⃣ Implementación clásica (estructural)
+// ① Implementación clásica (estructural)
 // ============================================================
 // Productos abstractos
 interface Button {
@@ -222,7 +222,7 @@ class DarkUIFactory : UIFactory {
 }
 
 // ============================================================
-// 2️⃣ Versión idiomática (uso de lambdas en lugar de subclases)
+// ② Versión idiomática (uso de lambdas en lugar de subclases)
 // ============================================================
 // Alternativamente, se pueden extraer como: 
 // `typealias ButtonCreator = () -> Button` y `typealias CheckboxCreator = () -> Checkbox`
@@ -235,7 +235,7 @@ class LambdaUIFactory(
 }
 
 // ============================================================
-// 3️⃣ Versión DSL-style (más declarativa y expresiva)
+// ③ Versión DSL-style (más declarativa y expresiva)
 // ============================================================
 fun uiFactory(block: UIFactoryScope.() -> Unit): UIFactory =
     UIFactoryScope().apply(block).build()
@@ -255,7 +255,7 @@ class UIFactoryScope {
 ### Uso
 ```kotlin
 // ============================================================
-// 1️⃣ Uso clásico
+// ① Uso clásico
 // ============================================================
 val factoryClassic: UIFactory = LightUIFactory()
 val buttonClassic = factoryClassic.createButton()
@@ -264,7 +264,7 @@ println(buttonClassic.render())   // Renderizando botón claro
 println(checkboxClassic.render()) // Renderizando checkbox claro
 
 // ============================================================
-// 2️⃣ Uso idiomático (con lambdas)
+// ② Uso idiomático (con lambdas)
 // ============================================================
 val factoryLambda = LambdaUIFactory(
     buttonCreator = { DarkButton() },
@@ -276,7 +276,7 @@ println(buttonLambda.render())   // Renderizando botón oscuro
 println(checkboxLambda.render()) // Renderizando checkbox oscuro
 
 // ============================================================
-// 3️⃣ Uso DSL-style
+// ③ Uso DSL-style
 // ============================================================
 val factoryDSL = uiFactory {
     theme("dark")
@@ -291,7 +291,7 @@ println(checkboxDSL.render()) // Renderizando checkbox oscuro
 ### Implementación
 ```kotlin
 // ============================================================
-// 1️⃣ Implementación clásica con subclases
+// ① Implementación clásica con subclases
 // ============================================================
 // Producto abstracto
 interface Notification {
@@ -322,7 +322,7 @@ class PushNotificationFactory : NotificationFactory() {
 }
 
 // ============================================================
-// 2️⃣ Versión idiomática - En lugar de heredar y sobrescribir `createProduct()`, se pasa una _lambda_ que cumple el mismo rol
+// ② Versión idiomática - En lugar de heredar y sobrescribir `createProduct()`, se pasa una _lambda_ que cumple el mismo rol
 // ============================================================
 // Alternativamente, se puede extraer como: `typealias NotificationCreator = (String) -> Notification`
 class LambdaNotificationFactory(
@@ -332,7 +332,7 @@ class LambdaNotificationFactory(
 }
 
 // ============================================================
-// 3️⃣ Versión DSL-style (más expresiva y fluida)
+// ③ Versión DSL-style (más expresiva y fluida)
 // ============================================================
 fun notification(block: NotificationCreator.() -> Unit): Notification =
     NotificationCreator().apply(block).build()
@@ -356,7 +356,7 @@ class NotificationCreator {
 // --- Uso común en Android ---
 // Podría usarse dentro de un ViewModel o UseCase, por ejemplo.
 // ============================================================
-// 1️⃣ Usando fábricas concretas
+// ① Usando fábricas concretas
 // ============================================================
 val emailFactory = EmailNotificationFactory()
 val pushFactory = PushNotificationFactory()
@@ -368,7 +368,7 @@ email.send() // 📧 Enviando email: Nuevo correo recibido
 push.send() // 📲 Mostrando notificación push: Tienes una nueva tarea pendiente
 
 // ============================================================
-// 2️⃣ Usando lambda factory (más conciso)
+// ② Usando lambda factory (más conciso)
 // ============================================================
 val lambdaFactory = LambdaNotificationFactory { message ->
     if ("@" in message) EmailNotification(message)
@@ -379,7 +379,7 @@ val lambdaNotification = lambdaFactory.create("Recordatorio diario")
 lambdaNotification.send() // 📲 Mostrando notificación push: Recordatorio diario
 
 // ============================================================
-// 3️⃣ Usando DSL-style builder
+// ③ Usando DSL-style builder
 // ============================================================
 val dslNotification = notification {
     type("email")
@@ -392,7 +392,7 @@ dslNotification.send() // 📧 Enviando email: Reporte mensual disponible
 ### Implementación
 ```kotlin
 // ============================================================
-// 1️⃣ Implementación clásica (estructura tradicional)
+// ① Implementación clásica (estructura tradicional)
 // ============================================================
 // Target
 interface MediaPlayer {
@@ -418,7 +418,7 @@ class MediaPlayerAdapter(
 }
 
 // ============================================================
-// 2️⃣ Versión idiomática (Adapter como lambda wrapper)
+// ② Versión idiomática (Adapter como lambda wrapper)
 // ============================================================
 fun interface SimpleMediaPlayer {
     fun play(fileName: String)
@@ -436,7 +436,7 @@ fun advancedPlayerAdapter(player: AdvancedMediaPlayerV2): SimpleMediaPlayer =
     }
 
 // ============================================================
-// 3️⃣ DSL-style Adapter (configurable)
+// ③ DSL-style Adapter (configurable)
 // ============================================================
 fun mediaPlayerAdapter(block: MediaAdapterScope.() -> Unit): MediaPlayer =
     MediaAdapterScope().apply(block).build()
@@ -461,7 +461,7 @@ class MediaAdapterScope {
 ### Uso
 ```kotlin
 // ============================================================
-// 1️⃣ Uso clásico
+// ① Uso clásico
 // ============================================================
 val classicPlayer: MediaPlayer =
     MediaPlayerAdapter(AdvancedMediaPlayer())
@@ -469,13 +469,13 @@ val classicPlayer: MediaPlayer =
 classicPlayer.play("song.mp3") // Reproduciendo archivo avanzado: /storage/media/song.mp3
 
 // ============================================================
-// 2️⃣ Uso idiomático (lambda adapter)
+// ② Uso idiomático (lambda adapter)
 // ============================================================
 val simplePlayer = advancedPlayerAdapter(AdvancedMediaPlayerV2())
 simplePlayer.play("podcast.mp3") // SDK reproduciendo: /sdk/media/podcast.mp3
 
 // ============================================================
-// 3️⃣ Uso DSL-style
+// ③ Uso DSL-style
 // ============================================================
 val dslPlayer = mediaPlayerAdapter {
     basePath("/dsl/media")
@@ -489,7 +489,7 @@ dslPlayer.play("audiobook.mp3") // Reproduciendo archivo avanzado: /dsl/media/au
 ### Implementación
 ```kotlin
 // ============================================================
-// 1️⃣ Implementación clásica (Object-Oriented tradicional)
+// ① Implementación clásica (Object-Oriented tradicional)
 // ============================================================
 class AudioService {
     fun load(file: String) = println("AudioService → cargando audio $file")
@@ -516,7 +516,7 @@ class MediaFacade(
 }
 
 // ============================================================
-// 2️⃣ Implementación idiomática (funciones como subsistema)
+// ② Implementación idiomática (funciones como subsistema)
 // ============================================================
 class MediaFacadeV2(
     private val loadAudio: (String) -> Unit,
@@ -531,7 +531,7 @@ class MediaFacadeV2(
 }
 
 // ============================================================
-// 3️⃣ Implementación DSL-style (configurable)
+// ③ Implementación DSL-style (configurable)
 // ============================================================
 class MediaFacadeDsl private constructor(
     private val audio: AudioService,
@@ -563,7 +563,7 @@ fun mediaFacade(block: MediaFacadeDsl.Builder.() -> Unit): MediaFacadeDsl =
 ### Uso
 ```kotlin
 // ============================================================
-// 1️⃣ Uso clásico
+// ① Uso clásico
 // ============================================================
 val facade = MediaFacade(AudioService(), VideoService(), RenderService())
 facade.play("movie.mp4")
@@ -574,7 +574,7 @@ facade.play("movie.mp4")
 
 
 // ============================================================
-// 2️⃣ Uso idiomático (subsistema como lambdas)
+// ② Uso idiomático (subsistema como lambdas)
 // ============================================================
 val facadeV2 = MediaFacadeV2(
     loadAudio = { println("λAudio → $it") },
@@ -589,7 +589,7 @@ facadeV2.play("trailer.mp4")
 // λRender → pintando frame
 
 // ============================================================
-// 3️⃣ Uso DSL-style
+// ③ Uso DSL-style
 // ============================================================
 val dslFacade = mediaFacade {
     basePath = "/dsl/content"
@@ -606,7 +606,7 @@ dslFacade.play("documentary.mp4")
 ### Implementación
 ```kotlin
 // ============================================================
-// 1️⃣ Implementación clásica (Object-Oriented tradicional)
+// ① Implementación clásica (Object-Oriented tradicional)
 // ============================================================
 interface TextProcessor {
     fun process(text: String): String
@@ -630,7 +630,7 @@ class UppercaseDecorator(processor: TextProcessor) : TextDecorator(processor) {
 
 
 // ============================================================
-// 2️⃣ Implementación idiomática (funciones como componente)
+// ② Implementación idiomática (funciones como componente)
 // ============================================================
 // ``typealias`` permite dar nombre semántico a un tipo complejo (como una función), 
 // ayudando a modelar roles de un patrón sin introducir nuevas clases
@@ -646,7 +646,7 @@ fun uppercaseDecorator(op: TextOp): TextOp = { text ->
 
 
 // ============================================================
-// 3️⃣ Implementación DSL-style
+// ③ Implementación DSL-style
 // ============================================================
 class TextPipelineBuilder {
     private val decorators = mutableListOf<TextOp>()
@@ -674,7 +674,7 @@ fun textPipeline(block: TextPipelineBuilder.() -> Unit): TextOp {
 ### Uso
 ```kotlin
 // ============================================================
-// 1️⃣ Uso clásico
+// ① Uso clásico
 // ============================================================
 val classicProcessor: TextProcessor =
     UppercaseDecorator(
@@ -688,7 +688,7 @@ println(result1) // HOLA MUNDO
 
 
 // ============================================================
-// 2️⃣ Uso idiomático
+// ② Uso idiomático
 // ============================================================
 val base: TextOp = { it }
 val processor = uppercaseDecorator(trimDecorator(base))
@@ -698,7 +698,7 @@ println(result2)  // KOTLIN DECORATOR
 
 
 // ============================================================
-// 3️⃣ Uso DSL-style
+// ③ Uso DSL-style
 // ============================================================
 val pipeline = textPipeline {
     trim()
@@ -713,7 +713,7 @@ println(result3) // PATRONES DE DISEÑO
 ### Implementación
 ```kotlin
 // ============================================================
-// 1️⃣ Implementación clásica (Object-Oriented tradicional)
+// ① Implementación clásica (Object-Oriented tradicional)
 // ============================================================
 interface PricingStrategy {
     fun calculate(price: Double): Double
@@ -739,7 +739,7 @@ class Checkout(
 
 
 // ============================================================
-// 2️⃣ Implementación idiomática (funciones como estrategia)
+// ② Implementación idiomática (funciones como estrategia)
 // ============================================================
 // ``typealias`` permite dar nombre semántico a un tipo complejo (como una función), 
 // ayudando a modelar roles de un patrón sin introducir nuevas clases
@@ -753,7 +753,7 @@ fun discountPricing(discount: Double): PricingStrategyFn = { price ->
 
 
 // ============================================================
-// 3️⃣ Implementación DSL-style
+// ③ Implementación DSL-style
 // ============================================================
 class PricingStrategyBuilder {
     private var discount: Double = 0.0
@@ -777,7 +777,7 @@ fun pricingStrategy(block: PricingStrategyBuilder.() -> Unit): PricingStrategyFn
 ### Uso
 ```kotlin
 // ============================================================
-// 1️⃣ Uso clásico
+// ① Uso clásico
 // ============================================================
 val checkout = Checkout(RegularPricing())
 
@@ -788,7 +788,7 @@ println(checkout.total(100.0)) // 80.0
 
 
 // ============================================================
-// 2️⃣ Uso idiomático
+// ② Uso idiomático
 // ============================================================
 var strategyFn: PricingStrategyFn = regularPricing()
 println(strategyFn(200.0)) // 200.0
@@ -798,7 +798,7 @@ println(strategyFn(200.0)) // 180.0
 
 
 // ============================================================
-// 3️⃣ Uso DSL-style
+// ③ Uso DSL-style
 // ============================================================
 val blackFridayStrategy = pricingStrategy {
     discount(0.5)
@@ -811,7 +811,7 @@ println(blackFridayStrategy(300.0)) // 150.0
 ### Implementación
 ```kotlin
 // ============================================================
-// 1️⃣ Implementación clásica (Object-Oriented tradicional)
+// ① Implementación clásica (Object-Oriented tradicional)
 // ============================================================
 interface EventListener<T> {
     fun onEvent(data: T)
@@ -835,7 +835,7 @@ class EventPublisher<T> {
 
 
 // ============================================================
-// 2️⃣ Implementación idiomática (funciones como observers)
+// ② Implementación idiomática (funciones como observers)
 // ============================================================
 // ``typealias`` permite dar nombre semántico a un tipo complejo (como una función), 
 // ayudando a modelar roles de un patrón sin introducir nuevas clases
@@ -859,7 +859,7 @@ class EventBus<T> {
 
 
 // ============================================================
-// 3️⃣ Implementación DSL-style
+// ③ Implementación DSL-style
 // ============================================================
 class ObservableBuilder<T> {
     private val observers = mutableListOf<Observer<T>>()
@@ -883,7 +883,7 @@ fun <T> observable(block: ObservableBuilder<T>.() -> Unit): (T) -> Unit {
 ### Uso
 ```kotlin
 // ============================================================
-// 1️⃣ Uso clásico
+// ① Uso clásico
 // ============================================================
 val publisher = EventPublisher<String>()
 
@@ -898,7 +898,7 @@ publisher.notify("Pedido enviado") // Email recibido: Pedido enviado
 
 
 // ============================================================
-// 2️⃣ Uso idiomático
+// ② Uso idiomático
 // ============================================================
 val bus = EventBus<Int>()
 
@@ -909,7 +909,7 @@ bus.emit(42) // Log: valor = 42
 
 
 // ============================================================
-// 3️⃣ Uso DSL-style
+// ③ Uso DSL-style
 // ============================================================
 val notifier = observable<String> {
     onEvent { println("Listener A: $it") }

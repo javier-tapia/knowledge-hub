@@ -311,7 +311,7 @@ class GoogleRedirectActivity : ComponentActivity() {
                         val token = exchangeCodeForToken(code, verifier)
                         
                         // ============================================================
-                        // 1️⃣ Opción sin Nimbus: Validaciones lógicas, no criptográficas
+                        // ① Opción sin Nimbus: Validaciones lógicas, no criptográficas
                         // ============================================================
                         // Decodificar payload del id_token
                         val claims = decodeIdTokenClaims(token.id_token!!)
@@ -337,7 +337,7 @@ class GoogleRedirectActivity : ComponentActivity() {
                         }
 
                         // ============================================================
-                        // 2️⃣ Opción con Nimbus: Validaciones criptográficas sobre la firma del id_token
+                        // ② Opción con Nimbus: Validaciones criptográficas sobre la firma del id_token
                         // ============================================================
                         val isValid = verifyIdTokenWithNimbus(token.id_token!!)
                         if (!isValid) {
@@ -568,12 +568,12 @@ class ProfileActivity : ComponentActivity() {
         lifecycleScope.launch {
             val accessToken = storage.read("access_token") ?: return@launch
 
-            // 1️⃣ Llamada a /userinfo
+            // ① Llamada a /userinfo
             val userInfo = fetchUserInfo(accessToken)
             nameText.text = userInfo.name
             emailText.text = userInfo.email
 
-            // 2️⃣ Llamada opcional a Google People API
+            // ② Llamada opcional a Google People API
             val peopleJson = fetchPeopleApi(accessToken)
             // procesar JSON según se necesite
         }

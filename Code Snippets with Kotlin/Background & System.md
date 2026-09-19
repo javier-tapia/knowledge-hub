@@ -243,7 +243,7 @@ viewModel.onUserRequestedSync()
 #### Configurar restricciones y programar tarea
 ```kotlin
 // ============================================================
-// 1️⃣ ViewModel Factory
+// ① ViewModel Factory
 // ============================================================
 class MainViewModelFactory(
     private val appContext: Context
@@ -258,7 +258,7 @@ class MainViewModelFactory(
 }
 
 // ============================================================
-// 2️⃣ El VM se instancia desde la UI
+// ② El VM se instancia desde la UI
 // ============================================================
 private val viewModel: MainViewModel by viewModels {
     MainViewModelFactory(applicationContext)
@@ -271,7 +271,7 @@ private val viewModel = ViewModelProvider(
 )[MainViewModel::class.java]
 
 // ============================================================
-// 3️⃣ ViewModel
+// ③ ViewModel
 // ============================================================
 class MainViewModel(
     private val context: Context
@@ -300,7 +300,7 @@ class MainViewModel(
 }
 
 // ============================================================
-// 4️⃣ Y desde la UI
+// ④ Y desde la UI
 // ============================================================
 viewModel.enqueueSync()
 ```
