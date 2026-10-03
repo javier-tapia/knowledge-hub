@@ -1158,8 +1158,8 @@ Tomando lo que indica la [documentación oficial](https://developer.android.com/
 > 🔍 Ver también el [Lab de Hilt](https://github.com/javier-tapia/android-and-kotlin-lab-chronicles/tree/master/app/src/main/java/com/example/android_and_kotlin_lab_chronicles/experiments/dependency_injection/hilt)
 
 📌 **Resumen de pasos para la configuración**:  
-1. Agregar los plugins de ... en el ***build.gradle.kts*** del proyecto
-2. Agregar los plugins de ... en el ***build.gradle.kts*** del módulo (o módulos)
+1. Agregar los plugins de ...... en el ***build.gradle.kts*** del proyecto
+2. Agregar los plugins de ...... en el ***build.gradle.kts*** del módulo (o módulos)
 3. Crear una clase que herede de ``Application()`` y agregarle la anotación ``@HiltAndroidApp``
 4. Agregar la aplicación con ``android:name`` dentro del tag ``<application/>`` en el Manifest
 
@@ -1285,6 +1285,13 @@ Dentro de un módulo, se puede hacer uso de _providers_. Para crear el _provider
 
 ### *Koin*
 Es un **framework de inyección de dependencias** que busca el mismo objetivo que *Dagger* pero que además es mucho más **fácil de implementar y se integra perfectamente con el ecosistema Android y los _ViewModel_**.
+
+> 🔍 Ver también el [Lab de Koin](https://github.com/javier-tapia/android-and-kotlin-lab-chronicles/tree/master/app/src/main/java/com/example/android_and_kotlin_lab_chronicles/experiments/dependency_injection/koin)
+
+📌 **Resumen de pasos para la configuración**:
+1. Agregar los plugins de ...... en el ***build.gradle.kts*** del proyecto
+2. Agregar los plugins de ...... en el ***build.gradle.kts*** del módulo (o módulos)
+3. ......
 
 ```kotlin
     import android.database.sqlite.SQLiteOpenHelper

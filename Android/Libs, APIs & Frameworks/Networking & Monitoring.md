@@ -372,7 +372,7 @@ sealed class Result<out T> {
 
 Ktor es un _framework_ para crear aplicaciones asincrónicas **del lado del servidor y del lado del cliente** con facilidad.  
 Incluye un cliente HTTP asincrónico multiplataforma, que permite realizar solicitudes, manejar respuestas y ampliar su funcionalidad con _plugins_, como autenticación, serialización JSON y más.  
-A diferencia de Retrofit, Ktor **no usa anotaciones ni interfaces**: se trabaja directamente con un cliente configurado y se realiza cada solicitud mediante la función `client.request{}`.
+A diferencia de Retrofit, Ktor **no usa anotaciones ni interfaces**: se trabaja directamente con un cliente configurado y se realiza cada solicitud mediante la función `client.request{}`. Aunque también cuenta con **funciones de extensión de conveniencia** para los métodos HTTP más comunes (GET, POST, PUT, DELETE).
 
 Para utilizar el cliente HTTP de Ktor en un proyecto Android, se deben configurar los repositorios y agregar las dependencias mandatorias y opcionales en caso de requerirlas.
 
@@ -391,15 +391,29 @@ data class UserDto(
 
 ```kotlin
 val client = HttpClient {
+    // Fuerza el lanzamiento de ClientRequestException / ServerResponseException
+    expectSuccess = true
+    
     install(ContentNegotiation) {
         json() // kotlinx.serialization
     }
+    
     install(HttpTimeout) {
         requestTimeoutMillis = 15_000
     }
+    
     install(DefaultRequest) {
         url("https://myapi.com/")
+        // Función corta directa para agregar un 'header'
+        header("User-Agent", "My-App/1.0")
+        // Accediendo a la propiedad 'headers' (que es un 'HeadersBuilder').
         headers.appendIfNameAbsent("X-Custom-Header", "Hello")
+    }
+    
+    // Alternativa: Función de extensión idomática (Recomendada por Ktor)
+    defaultRequest {
+        url("https://api.example.com/")
+        header(HttpHeaders.ContentType, "application/json")
     }
 }
 ```
@@ -539,14 +553,22 @@ val client = HttpClient(engineFactory = OkHttp) {
 
     install(plugin = DefaultRequest) {
         url("https://api.miservicio.com/")
+        // Función corta directa para agregar un 'header'
         header("User-Agent", "My-App/1.0")
+        // Accediendo a la propiedad 'headers' (que es un 'HeadersBuilder').
         headers.appendIfNameAbsent("X-Custom-Header", "Hello")
+    }
+
+    // Alternativa: Función de extensión idomática (Recomendada por Ktor)
+    defaultRequest {
+        url("https://api.example.com/")
+        header("User-Agent", "My-App/1.0")
     }
 }
 ```
 
 ### Realizar solicitudes
-Ktor no utiliza interfaces como Retrofit: se usa la función ``client.request``.
+Ktor no utiliza interfaces como Retrofit: se usa la función ``client.request``. Aunque también cuenta con **funciones de extensión de conveniencia** para los métodos HTTP más comunes (GET, POST, PUT, DELETE).
 
 La clase ``HttpRequestBuilder`` ofrece:
 
@@ -565,20 +587,35 @@ suspend fun fetchUser(client: HttpClient): SampleResponse {
         header("Journey-Id", "12345")
     }
 
+    // Alternativa con la función de extensión de conveniencia para GET
+    val response: HttpResponse = client.get("users/1") {
+        header("Journey-Id", "12345")
+    }
+
     return response.body()
 }
 ```
 
 ### Manejo de respuestas y errores
-> ⚠️ Importante:  
-> Ktor **SÍ lanza excepción** en errores HTTP por defecto (``ClientRequestException`` para los 4xx, ``ServerResponseException`` para los 5xx). Se puede configurar manualmente el ``HttpResponseValidator`` para que no lance excepciones.  
-> Ktor **SÍ lanza excepción** en errores de red (_timeout_, DNS, desconexión, SSL) o serialización.
+> ⚠️ **Importante**:  
+> - **Errores de Red y Serialización**: Ktor **SÍ lanza excepción** siempre en fallos de conectividad (_timeout_, DNS, desconexión, errores SSL) o si la deserialización del cuerpo de la respuesta falla. 
+> - **Respuestas HTTP no exitosas (4xx / 5xx)**:
+>   - Por defecto, la propiedad ``expectSuccess`` está desactivada (``false``). Esto significa que si se pide una respuesta genérica (``val response: HttpResponse = client.get(...)``), Ktor **NO lanzará excepción** al recibir un _status_ 4xx o 5xx; simplemente se obtendrá el ``HttpResponse`` con su respectivo _status code_. 
+>   - **Excepción**: Si se deserializa directamente la respuesta (``val user: UserDto = client.get(...).body()``), Ktor **SÍ lanzará excepción** (``ClientRequestException`` para 4xx, ``ServerResponseException`` para 5xx) si la respuesta no es exitosa. 
+>   - **Configuración global**: Si se desea que Ktor lance automáticamente excepciones 4xx/5xx en todas las solicitudes sin importar cómo se consuman, se puede activar ``expectSuccess = true`` en la configuración del cliente o personalizar la validación mediante ``HttpResponseValidator {}``.
 
 El tipo de respuesta que devuelve es un ``HttpResponse``.
 
 Ejemplo:
 
 ```kotlin
+val client = HttpClient {
+    // Fuerza el lanzamiento de ClientRequestException / ServerResponseException
+    expectSuccess = true
+    
+    // Resto de la configuración...
+}
+
 suspend fun safeCall(client: HttpClient): Result<SampleResponse> {
     return try {
         val response: HttpResponse = client.request {
