@@ -13,6 +13,7 @@
   * [Listar todos los paquetes instalados](#listar-todos-los-paquetes-instalados)
   * [Buscar un paquete en particular](#buscar-un-paquete-en-particular)
   * [Matar un proceso](#matar-un-proceso)
+  * [Limpiar archivos locales del dispositivo](#limpiar-archivos-locales-del-dispositivo)
   * [Simular un *shake* en el emulador](#simular-un-shake-en-el-emulador)
   * [Hacer un *dump* del *stack* de *activities*](#hacer-un-dump-del-stack-de-activities)
   * [Hacer un *dump* de las *windows*](#hacer-un-dump-de-las-windows)
@@ -152,6 +153,16 @@ adb shell am force-stop <PACKAGE>
 # Ejemplos:
 adb shell am kill com.example.something
 adb shell am force-stop com.example.something
+```
+
+## Limpiar archivos locales del dispositivo
+Limpia de raíz todas las bases de datos Room, _SharedPreferences_ y archivos locales de la app.
+
+```bash
+adb shell pm clear <APPLICATION-ID>
+
+# Ejemplo:
+adb shell pm clear com.example.android_and_kotlin_lab_chronicles
 ```
 
 ## Simular un *shake* en el emulador
